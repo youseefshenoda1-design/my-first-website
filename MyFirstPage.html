@@ -44,6 +44,7 @@
             list-style: none;
             display: flex;
             gap: 15px;
+            align-items: center;
         }
 
         header nav ul li button {
@@ -61,6 +62,13 @@
         header nav ul li button.active {
             background-color: #3498db;
             color: #fff;
+        }
+
+        .admin-nav-btn {
+            background-color: #e67e22 !important;
+        }
+        .admin-nav-btn:hover {
+            background-color: #d35400 !important;
         }
 
         /* تنسيق الأقسام (Sections) */
@@ -160,6 +168,37 @@
             line-height: 1.8;
         }
 
+        /* لوحة التحكم الخاصة بالأدمن */
+        .admin-panel {
+            background: #fff3cd;
+            border: 1px solid #ffeeba;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 25px;
+            display: none;
+        }
+        .admin-panel.show {
+            display: block;
+        }
+        .admin-panel input, .admin-panel textarea {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        .admin-panel button {
+            background-color: #27ae60;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .admin-panel button:hover {
+            background-color: #219653;
+        }
+
         /* تصميم متجاوب للموبايل */
         @media (max-width: 768px) {
             header {
@@ -183,9 +222,9 @@
             <ul>
                 <li><button class="tab-btn active" onclick="openTab(event, 'home')">الرئيسية</button></li>
                 <li><button class="tab-btn" onclick="openTab(event, 'story')">قصه دانيال النبي</button></li>
-                <li><button class="tab-btn" onclick="openTab(event, 'families')">الأسر</button></li>
                 <li><button class="tab-btn" onclick="openTab(event, 'news')">الأخبار</button></li>
                 <li><button class="tab-btn" onclick="openTab(event, 'lessons')">الدروس</button></li>
+                <li><button class="tab-btn admin-nav-btn" onclick="toggleAdminLogin()">دخول الأدمن</button></li>
             </ul>
         </nav>
     </header>
@@ -201,11 +240,9 @@
         <h2>أقسام المنصة</h2>
         <div class="cards-grid">
             <div class="card">
-            <button class="btn" style="margin-top: 15px; padding: 6px 15px; font-size: 14px;" onclick="openTab(event, 'story')">عرض القصة</button>
-            </div>
-            <div class="card">
-               <p>التواصل المستمر بين الخدام والأعضاء.</p>
-                <button class="btn" style="margin-top: 15px; padding: 6px 15px; font-size: 14px;" onclick="openTab(event, 'families')">عرض الأسر</button>
+                <h3>قصة دانيال النبي</h3>
+                <p>تعرف على قصة دانيال النبي في جب الأسد.</p>
+                <button class="btn" style="margin-top: 15px; padding: 6px 15px; font-size: 14px;" onclick="openTab(event, 'story')">عرض القصة</button>
             </div>
             <div class="card">
                 <h3>قسم الأخبار</h3>
@@ -218,33 +255,52 @@
                 <button class="btn" style="margin-top: 15px; padding: 6px 15px; font-size: 14px;" onclick="openTab(event, 'lessons')">عرض الدروس</button>
             </div>
         </div>
-    
+    </div>
+
+    <!-- 2. صفحة القصة -->
     <div id="story" class="tab-content">
-      <div class="content-box">
-            </div>
-<div id="families" class="tab-content">
-        <!-- 4. صفحة الأخبار -->
+        <h2>قصة دانيال النبي</h2>
+        <div class="content-box">
+            <p>كان دانيال رجلاً أميناً يصلي إلى الله كل يوم رغم القوانين التي منعت ذلك. طرحوه في جب الأسود، لكن الله أرسل ملاكه وسد أفواه الأسود فلم يضروه بشيء، لأنه كان موثقاً ومؤمناً بإلهه.</p>
+        </div>
+    </div>
+
+    <!-- 3. صفحة الأخبار -->
     <div id="news" class="tab-content">
         <h2>قسم الأخبار</h2>
         <div class="cards-grid">
-            <div class="card">الحجز للرحلة القادمة، برجاء التواصل مع خدام الأسر.</p>
+            <div class="card">
+                <h3>إعلان الرحلة</h3>
+                <p>الحجز للرحلة القادمة، برجاء التواصل مع خدام الخدمة.</p>
             </div>
         </div>
     </div>
 
-    <!-- 5. صفحة الدروس -->
+    <!-- 4. صفحة الدروس (مع لوحة التحكم لإضافة الدروس) -->
     <div id="lessons" class="tab-content">
         <h2>قسم الدروس</h2>
-        <div class="cards-grid">
+
+        <!-- لوحة تحكم الأدمن لإضافة درس جديد -->
+        <div id="adminPanel" class="admin-panel">
+            <h3>لوحة تحكم الأدمن: نشر درس جديد</h3>
+            <p style="margin-bottom: 10px; color: #856404; font-size: 13px;">أنت مسجل دخول كمدير للموقع الآن.</p>
+            <input type="text" id="lessonTitle" placeholder="عنوان الدرس الجديد">
+            <textarea id="lessonDesc" rows="4" placeholder="محتوى أو تفاصيل الدرس"></textarea>
+            <button onclick="addNewLesson()">نشر الدرس الآن</button>
+        </div>
+
+        <div class="cards-grid" id="lessonsContainer">
+            <!-- الدروس الافتراضية والجديدة تظهر هنا -->
             <div class="card">
-                 </div>
-            <div class="card">
-                 </div>
+                <h3>الدرس الأول: محبة الله</h3>
+                <p>درس تمهيدي عن مدى حب الله لأولاده وحمايته لهم في كل الظروف.</p>
+            </div>
         </div>
     </div>
 
-    <!-- كود الجافاسكريبت للتحكم بالصفحات -->
+    <!-- كود الجافاسكريبت للتحكم بالصفحات والأدمن -->
     <script>
+        // تنقل الصفحات
         function openTab(evt, tabName) {
             let tabContents = document.getElementsByClassName("tab-content");
             for (let i = 0; i < tabContents.length; i++) {
@@ -257,10 +313,85 @@
             }
 
             document.getElementById(tabName).classList.add("active");
-            evt.currentTarget.classList.add("active");
+            if(evt && evt.currentTarget) {
+                evt.currentTarget.classList.add("active");
+            }
+        }
+
+        // نظام تسجيل دخول الأدمن
+        let isAdminLoggedIn = false;
+
+        function toggleAdminLogin() {
+            if (!isAdminLoggedIn) {
+                let user = prompt("أدخل اسم المستخدم (Admin Username):");
+                let pass = prompt("أدخل كلمة المرور (Admin Password):");
+
+                if (user === "مدارس الثالثة ثالثة ابتدائي" && pass === "youssef772010") {
+                    isAdminLoggedIn = true;
+                    alert("تم تسجيل الدخول بنجاح كأدمن!");
+                    document.getElementById("adminPanel").classList.add("show");
+                    openTab(null, 'lessons');
+                } else {
+                    alert("اسم المستخدم أو كلمة المرور غير صحيحة!");
+                }
+            } else {
+                alert("انت مسجل دخول بالفعل كأدمن.");
+                openTab(null, 'lessons');
+            }
+        }
+
+        // جلب الدروس المخزنة مسبقاً عند فتح الصفحة
+        window.onload = function() {
+            loadSavedLessons();
+        };
+
+        function addNewLesson() {
+            let title = document.getElementById("lessonTitle").value.trim();
+            let desc = document.getElementById("lessonDesc").value.trim();
+
+            if (title === "" || desc === "") {
+                alert("الرجاء إدخال عنوان الدرس ومحتواه أولاً!");
+                return;
+            }
+
+            let newLesson = { title: title, desc: desc };
+            
+            // تخزين الدرس في المتصفح المحلّي
+            let savedLessons = JSON.parse(localStorage.getItem("myLessons")) || [];
+            savedLessons.push(newLesson);
+            localStorage.setItem("myLessons", JSON.stringify(savedLessons));
+
+            // تفريغ الحقول وعرض الدروس
+            document.getElementById("lessonTitle").value = "";
+            document.getElementById("lessonDesc").value = "";
+            loadSavedLessons();
+            alert("تم نشر الدرس بنجاح!");
+        }
+
+        function loadSavedLessons() {
+            let container = document.getElementById("lessonsContainer");
+            // الدروس الأساسية الافتراضية
+            let html = `
+                <div class="card">
+                    <h3>الدرس الأول: محبة الله</h3>
+                    <p>درس تمهيدي عن مدى حب الله لأولاده وحمايته لهم في كل الظروف.</p>
+                </div>
+            `;
+
+            let savedLessons = JSON.parse(localStorage.getItem("myLessons")) || [];
+            for (let i = 0; i < savedLessons.length; i++) {
+                html += `
+                    <div class="card">
+                        <h3>${savedLessons[i].title}</h3>
+                        <p>${savedLessons[i].desc}</p>
+                    </div>
+                `;
+            }
+            container.innerHTML = html;
         }
     </script>
 
 </body>
-</html>    
+</html>
+       
        
