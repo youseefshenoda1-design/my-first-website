@@ -64,6 +64,13 @@
             color: #fff;
         }
 
+        .admin-nav-btn {
+            background-color: #e67e22 !important;
+        }
+        .admin-nav-btn:hover {
+            background-color: #d35400 !important;
+        }
+
         /* تنسيق الأقسام (Sections) */
         .tab-content {
             display: none;
@@ -152,6 +159,17 @@
             line-height: 1.6;
         }
 
+        .lesson-lang {
+            display: inline-block;
+            background: #e0f2fe;
+            color: #0369a1;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+
         /* تنسيق عام للمحتوى النصي */
         .content-box {
             background: #fff;
@@ -161,7 +179,7 @@
             line-height: 1.8;
         }
 
-        /* لوحة التحكم الخاصة بالأدمن (مخفية تماماً افتراضياً) */
+        /* لوحة التحكم الخاصة بالأدمن */
         .admin-panel {
             background: #fff3cd;
             border: 1px solid #ffeeba;
@@ -173,7 +191,7 @@
         .admin-panel.show {
             display: block;
         }
-        .admin-panel input, .admin-panel textarea {
+        .admin-panel input, .admin-panel textarea, .admin-panel select {
             width: 100%;
             padding: 10px;
             margin-bottom: 10px;
@@ -208,7 +226,7 @@
 </head>
 <body>
 
-    <!-- الهيدر وقائمة التنقل (بدون أي أزرار للأدمن) -->
+    <!-- الهيدر وقائمة التنقل -->
     <header>
         <div class="logo">مدارس احد تلاته ابتدائي</div>
         <nav>
@@ -217,6 +235,7 @@
                 <li><button class="tab-btn" onclick="openTab(event, 'story')">قصه دانيال النبي</button></li>
                 <li><button class="tab-btn" onclick="openTab(event, 'news')">الأخبار</button></li>
                 <li><button class="tab-btn" onclick="openTab(event, 'lessons')">الدروس</button></li>
+                <li><button class="tab-btn admin-nav-btn" onclick="toggleAdminLogin()">دخول الأدمن</button></li>
             </ul>
         </nav>
     </header>
@@ -255,3 +274,145 @@
         <div class="content-box">
             <p>كان دانيال رجلاً أميناً يصلي إلى الله كل يوم رغم القوانين التي منعت ذلك. طرحوه في جب الأسود، لكن الله أرسل ملاكه وسد أفواه الأسود فلم يضروه بشيء، لأنه كان موثقاً ومؤمناً بإلهه.</p>
         </div>
+    </div>
+
+    <!-- 3. صفحة الأخبار -->
+    <div id="news" class="tab-content">
+        <h2>قسم الأخبار</h2>
+        <div class="cards-grid">
+            <div class="card">
+                <h3>إعلان الرحلة</h3>
+                <p>الحجز للرحلة القادمة، برجاء التواصل مع خدام الخدمة.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- 4. صفحة الدروس (مع لوحة التحكم وإضافة اللغة) -->
+    <div id="lessons" class="tab-content">
+        <h2>قسم الدروس</h2>
+
+        <!-- لوحة تحكم الأدمن لإضافة درس جديد مع اختيار اللغة -->
+        <div id="adminPanel" class="admin-panel">
+            <h3>لوحة تحكم الأدمن: نشر درس جديد</h3>
+            <p style="margin-bottom: 10px; color: #856404; font-size: 13px;">أنت مسجل دخول كمدير للموقع الآن.</p>
+            
+            <label style="font-size: 14px; font-weight: bold; display: block; margin-bottom: 5px;">لغة الدرس:</label>
+            <select id="lessonLang">
+                <option value="اللغة العربية">اللغة العربية</option>
+                <option value="اللغة الإنجليزية">اللغة الإنجليزية</option>
+                <option value="لغات أخرى">لغات أخرى</option>
+            </select>
+
+            <input type="text" id="lessonTitle" placeholder="عنوان الدرس الجديد">
+            <textarea id="lessonDesc" rows="4" placeholder="محتوى أو تفاصيل الدرس"></textarea>
+            <button onclick="addNewLesson()">نشر الدرس الآن</button>
+        </div>
+
+        <div class="cards-grid" id="lessonsContainer">
+            <!-- الدروس الافتراضية والجديدة تظهر هنا -->
+            <div class="card">
+                <span class="lesson-lang">اللغة العربية</span>
+                <h3>الدرس الأول: محبة الله</h3>
+                <p>درس تمهيدي عن مدى حب الله لأولاده وحمايته لهم في كل الظروف.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- كود الجافاسكريبت للتحكم بالصفحات والأدمن -->
+    <script>
+        // تنقل الصفحات
+        function openTab(evt, tabName) {
+            let tabContents = document.getElementsByClassName("tab-content");
+            for (let i = 0; i < tabContents.length; i++) {
+                tabContents[i].classList.remove("active");
+            }
+
+            let tabButtons = document.getElementsByClassName("tab-btn");
+            for (let i = 0; i < tabButtons.length; i++) {
+                tabButtons[i].classList.remove("active");
+            }
+
+            document.getElementById(tabName).classList.add("active");
+            if(evt && evt.currentTarget) {
+                evt.currentTarget.classList.add("active");
+            }
+        }
+
+        // نظام تسجيل دخول الأدمن
+        let isAdminLoggedIn = false;
+
+        function toggleAdminLogin() {
+            if (!isAdminLoggedIn) {
+                let user = prompt("أدخل اسم المستخدم (Admin Username):");
+                let pass = prompt("أدخل كلمة المرور (Admin Password):");
+
+                if (user === "مدارس الثالثة ثالثة ابتدائي" && pass === "youssef772010") {
+                    isAdminLoggedIn = true;
+                    alert("تم تسجيل الدخول بنجاح كأدمن!");
+                    document.getElementById("adminPanel").classList.add("show");
+                    openTab(null, 'lessons');
+                } else {
+                    alert("اسم المستخدم أو كلمة المرور غير صحيحة!");
+                }
+            } else {
+                alert("انت مسجل دخول بالفعل كأدمن.");
+                openTab(null, 'lessons');
+            }
+        }
+
+        // جلب الدروس المخزنة مسبقاً عند فتح الصفحة
+        window.onload = function() {
+            loadSavedLessons();
+        };
+
+        function addNewLesson() {
+            let lang = document.getElementById("lessonLang").value;
+            let title = document.getElementById("lessonTitle").value.trim();
+            let desc = document.getElementById("lessonDesc").value.trim();
+
+            if (title === "" || desc === "") {
+                alert("الرجاء إدخال عنوان الدرس ومحتواه أولاً!");
+                return;
+            }
+
+            let newLesson = { lang: lang, title: title, desc: desc };
+            
+            // تخزين الدرس في المتصفح المحلّي
+            let savedLessons = JSON.parse(localStorage.getItem("myLessons")) || [];
+            savedLessons.push(newLesson);
+            localStorage.setItem("myLessons", JSON.stringify(savedLessons));
+
+            // تفريغ الحقول وعرض الدروس
+            document.getElementById("lessonTitle").value = "";
+            document.getElementById("lessonDesc").value = "";
+            loadSavedLessons();
+            alert("تم نشر الدرس بنجاح!");
+        }
+
+        function loadSavedLessons() {
+            let container = document.getElementById("lessonsContainer");
+            // الدروس الأساسية الافتراضية
+            let html = `
+                <div class="card">
+                    <span class="lesson-lang">اللغة العربية</span>
+                    <h3>الدرس الأول: محبة الله</h3>
+                    <p>درس تمهيدي عن مدى حب الله لأولاده وحمايته لهم في كل الظروف.</p>
+                </div>
+            `;
+
+            let savedLessons = JSON.parse(localStorage.getItem("myLessons")) || [];
+            for (let i = 0; i < savedLessons.length; i++) {
+                html += `
+                    <div class="card">
+                        <span class="lesson-lang">${savedLessons[i].lang}</span>
+                        <h3>${savedLessons[i].title}</h3>
+                        <p>${savedLessons[i].desc}</p>
+                    </div>
+                `;
+            }
+            container.innerHTML = html;
+        }
+    </script>
+
+</body>
+</html>
