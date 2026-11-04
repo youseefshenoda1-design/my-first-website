@@ -154,7 +154,6 @@ footer {
     </nav>
 </header>
 
-<!-- الرئيسية -->
 <section id="home" class="tab-content active">
     <div class="hero">
         <h1>إِلَهِي أَرْسَلَ مَلاَكَهُ وَسَدَّ أَفْوَاهَ الأُسُودِ</h1>
@@ -187,7 +186,6 @@ footer {
     </div>
 </section>
 
-<!-- القصة -->
 <section id="story" class="tab-content">
     <h2>قصة دانيال النبي</h2>
     <div class="content-box">
@@ -197,19 +195,16 @@ footer {
     </div>
 </section>
 
-<!-- الأخبار -->
 <section id="news" class="tab-content">
     <h2>قسم الأخبار</h2>
     <div id="newsList" class="cards-grid"></div>
 </section>
 
-<!-- الدروس -->
 <section id="lessons" class="tab-content">
     <h2>قسم الدروس</h2>
     <div id="lessonsList" class="cards-grid"></div>
 </section>
 
-<!-- الحضور والغياب -->
 <section id="attendance" class="tab-content">
     <h2>الحضور والغياب</h2>
     <div class="content-box">
@@ -217,7 +212,6 @@ footer {
     </div>
 </section>
 
-<!-- لوحة الإدارة -->
 <section id="admin" class="tab-content">
     <h2>لوحة تحكم الأدمن ⚙️</h2>
 
@@ -257,10 +251,8 @@ footer {
 <script>
 const ADMIN_USER = "youseef";
 
-// بصمة SHA-256 لكلمة المرور المحددة سابقاً.
-// لا تضع كلمة المرور الأصلية في الكود.
 const ADMIN_HASH =
-"a3e33ebc33091a1529fbeeebf0694690b4c72d3bdc251f1abcfbab8f2c1e2ab0";
+"e9b40f612a63bdb5288b00170fbc9d9dd968e6a08c636a5c88b816d3a3264ac9";
 
 let clicks = 0;
 let editItem = null;
@@ -285,7 +277,6 @@ document.querySelectorAll('.tab-btn').forEach(button => {
     button.addEventListener('click', () => showTab(button.dataset.tab));
 });
 
-// خمس ضغطات على اسم الموقع تفتح تسجيل الدخول
 document.getElementById('logo').addEventListener('click', async () => {
     clicks++;
     if(clicks < 5) return;
@@ -366,7 +357,11 @@ function addPost(type) {
     const data = getData(type);
 
     if(editItem !== null && editItem.type === type) {
-        data[editItem.index] = {title,content,date:new Date().toLocaleDateString('ar-EG')};
+        data[editItem.index] = {
+            title,
+            content,
+            date:new Date().toLocaleDateString('ar-EG')
+        };
         editItem = null;
     } else {
         data.unshift({
@@ -517,5 +512,4 @@ render();
 </script>
 
 </body>
-    </html>
-                
+</html>
